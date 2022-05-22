@@ -116,7 +116,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               child: GFButton(
                 onPressed: null,
                 text: "Ce film est déjà dans la liste",
-                disabledTextColor: Colors.grey,
                 color: Colors.purple,
                 type: GFButtonType.solid,
                 fullWidthButton: true,

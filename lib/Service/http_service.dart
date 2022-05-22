@@ -19,7 +19,7 @@ class HttpService {
   ///
   Future<List<Movie>?> getPopular(int currentPosition, int amountToLoad, String typeRequest) async {
     // Check pour savoir si l'url est correcte
-    if (baseUrl.isEmpty ) {
+    if (baseUrl.isEmpty) {
       return null;
     }
     // Récupération des films populaires
