@@ -11,22 +11,24 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
 
-  late String _apiKey, _baseUrl, _username;
+  final textControllerApiKey = TextEditingController();
+  final textControllerBaseUrl = TextEditingController();
+  final textControllerUsername = TextEditingController();
 
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _apiKey = prefs.getString('apiKey') ?? '';
-      _baseUrl = prefs.getString('baseUrl') ?? '';
-      _username = prefs.getString('username') ?? '';
+      textControllerApiKey.text = prefs.getString('apiKey') ?? '';
+      textControllerBaseUrl.text = prefs.getString('baseUrl') ?? '';
+      textControllerUsername.text = prefs.getString('username') ?? '';
     });
   }
 
   Future<void> _writeData() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('apiKey', _apiKey);
-    prefs.setString('baseUrl', _baseUrl);
-    prefs.setString('username', _username);
+    textControllerApiKey.text.isNotEmpty ? prefs.setString('apiKey', textControllerApiKey.text) : null;
+    textControllerBaseUrl.text.isNotEmpty ? prefs.setString('baseUrl', textControllerBaseUrl.text) : null;
+    textControllerUsername.text.isNotEmpty ? prefs.setString('username', textControllerUsername.text) : null;
   }
 
 
@@ -34,6 +36,14 @@ class _SettingsPageState extends State<SettingsPage> {
   initState() {
     _loadData();
     super.initState();
+  }
+
+  @override
+  dispose() {
+    textControllerApiKey.dispose();
+    textControllerBaseUrl.dispose();
+    textControllerUsername.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,36 +58,21 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             children: [
               TextField(
-                controller: TextEditingController(text: _apiKey),
-                onChanged: (text) {
-                  setState(() {
-                    _apiKey = text;
-                  });
-                },
+                controller: textControllerApiKey,
                 decoration: const InputDecoration(
                   labelText: 'API Key',
                 ),
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: TextEditingController(text: _baseUrl),
-                onChanged: (text) {
-                  setState(() {
-                    _baseUrl = text;
-                  });
-                },
+                controller: textControllerBaseUrl,
                 decoration: const InputDecoration(
                   labelText: 'Base URL de l\'API',
                 ),
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: TextEditingController(text: _username),
-                onChanged: (text) {
-                  setState(() {
-                    _username = text;
-                  });
-                },
+                controller: textControllerUsername,
                 decoration: const InputDecoration(
                   labelText:  'Username utilisateur Ombi',
                 )

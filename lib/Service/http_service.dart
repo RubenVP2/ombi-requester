@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Model/movie.dart';
@@ -8,11 +9,17 @@ import '../Model/movie.dart';
 ///
 class HttpService {
 
-  String baseUrl = "https://ombi.ezoniks.fr/api";
+  String baseUrl = "";
+  String apiKey = "";
+  String username = "";
 
   HttpService() {
     // On récupère les données de l'API
-    //
+    SharedPreferences.getInstance().then((prefs) {
+      baseUrl = prefs.getString('baseUrl') ?? baseUrl;
+      apiKey = prefs.getString('apiKey') ?? apiKey;
+      username = prefs.getString('username') ?? username;
+    });
   }
   ///
   /// Récupère les films populaires
@@ -24,10 +31,18 @@ class HttpService {
     }
     // Récupération des films populaires
     var url = Uri.parse("$baseUrl/v2/Search/movie/${typeRequest.toLowerCase()}/$currentPosition/$amountToLoad");
-    Response res = await get(url, headers: {
+    late Response res;
+
+    try {
+      res = await get(url, headers: {
         "ApiKey": "8d116c0af172470f83a9b454e1ea7bb2"
       }
-    );
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
 
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
@@ -60,7 +75,6 @@ class HttpService {
 
     if ( res.statusCode == 200 ) {
       var body = jsonDecode(res.body);
-      print(body);
       return body;
     } else {
       throw "Erreur d'ajout du film";
