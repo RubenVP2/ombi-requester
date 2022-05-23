@@ -113,12 +113,9 @@ class HttpService {
     );
 
     if (res.statusCode == 200) {
-      List<dynamic> body = jsonDecode(res.body);
-      // Convertir chaque objet json en string
-      List<String> profiles = body.map((dynamic item) => item.toString()).toList();
       // Sauvegarde des profiles dans le localStorage
-      App.localStorage?.setStringList('profiles', profiles);
-      return "Données bien récupérées : ${profiles.length} profils trouvés.";
+      App.localStorage?.setString('profiles', res.body);
+      return "Données bien récupérées : ${jsonDecode(res.body).length} profils trouvés.";
     } else {
       return "Erreur de récupération des données";
     }

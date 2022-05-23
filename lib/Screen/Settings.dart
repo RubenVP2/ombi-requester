@@ -84,7 +84,7 @@ class _SettingsPageState extends State<SettingsPage> {
               // Information
               const SizedBox(height: 15),
               const Text(
-                'Les données déjà saisies seront écrasées, elles apparaissent quand vous sélectionnez un champ.',
+                'Les données déjà saisies seront écrasées.',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.normal,

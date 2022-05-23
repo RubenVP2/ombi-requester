@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +27,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   bool _isLoading = false;
 
+  // Controller
+  final textControllerQuality = TextEditingController();
+
+  // Récupération de la list 'profiles' depuis le localStorage, décode en json et création d'un Map
+  List<dynamic> _profiles = jsonDecode(App.localStorage?.getString('profiles') ?? '[]');
+
   @override
   initState() {
     // On Récupère tous les films demandés par l'utilisateur pour savoir si le film est déjà dans la liste on affiche pas le bouton d'ajout
@@ -33,7 +41,55 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         _isMovieRequested = value.any((element) => element.theMovieDbId == widget.movie.theMovieDbId);
       });
     });
+    for (String profile in _profiles) {
+      print(profile);
+    }
     super.initState();
+  }
+
+  Future _showDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Ajouter le film à Radarr"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Choix du choix de la qualité dans un DropDown
+              DropdownButton<String>(
+                value: textControllerQuality.text,
+                items: [
+                ],
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      textControllerQuality.text = newValue;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            // Bouton d'annulation
+            FlatButton(
+              child: const Text('Annuler'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            // Bouton d'ajout
+            FlatButton(
+              child: const Text('Ajouter'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -116,6 +172,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               padding: const EdgeInsets.all(8),
               child: GFButton(
                 onPressed: () {
+                  // Dialog pour choisir les paramètres de l'ajout
+                  _showDialog();
                   // Activation du loading
                   setState(() {
                     _isLoading = true;
