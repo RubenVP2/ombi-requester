@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Model/movie.dart';
+import '../globals.dart';
 
 ///
 /// Classe permettant de récupérer les données depuis l'API
@@ -15,11 +16,9 @@ class HttpService {
 
   HttpService() {
     // On récupère les données de l'API
-    SharedPreferences.getInstance().then((prefs) {
-      baseUrl = prefs.getString('baseUrl') ?? baseUrl;
-      apiKey = prefs.getString('apiKey') ?? apiKey;
-      username = prefs.getString('username') ?? username;
-    });
+    baseUrl = App.localStorage?.getString('baseUrl') ?? "";
+    apiKey = App.localStorage?.getString('apiKey') ?? "";
+    username = App.localStorage?.getString('username') ?? "";
   }
   ///
   /// Récupère les films populaires

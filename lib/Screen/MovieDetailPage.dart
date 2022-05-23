@@ -3,6 +3,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Model/movie.dart';
 import '../Service/http_service.dart';
+import '../globals.dart';
 
 class MovieDetailPage extends StatefulWidget {
 
@@ -23,17 +24,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   late Future<Map> message;
 
   bool _isLoading = false;
-
-  late String _apiKey, _baseUrl, _username;
-
-  Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _apiKey = prefs.getString('apiKey') ?? '';
-      _baseUrl = prefs.getString('baseUrl') ?? '';
-      _username = prefs.getString('username') ?? '';
-    });
-  }
 
   @override
   initState() {

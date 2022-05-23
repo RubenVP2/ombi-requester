@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../globals.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -16,19 +16,17 @@ class _SettingsPageState extends State<SettingsPage> {
   final textControllerUsername = TextEditingController();
 
   Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      textControllerApiKey.text = prefs.getString('apiKey') ?? '';
-      textControllerBaseUrl.text = prefs.getString('baseUrl') ?? '';
-      textControllerUsername.text = prefs.getString('username') ?? '';
+      textControllerApiKey.text = App.localStorage?.getString('apiKey') ?? '';
+      textControllerBaseUrl.text = App.localStorage?.getString('baseUrl') ?? '';
+      textControllerUsername.text = App.localStorage?.getString('username') ?? '';
     });
   }
 
   Future<void> _writeData() async {
-    final prefs = await SharedPreferences.getInstance();
-    textControllerApiKey.text.isNotEmpty ? prefs.setString('apiKey', textControllerApiKey.text) : null;
-    textControllerBaseUrl.text.isNotEmpty ? prefs.setString('baseUrl', textControllerBaseUrl.text) : null;
-    textControllerUsername.text.isNotEmpty ? prefs.setString('username', textControllerUsername.text) : null;
+    textControllerApiKey.text.isNotEmpty ? App.localStorage?.setString('apiKey', textControllerApiKey.text) : null;
+    textControllerBaseUrl.text.isNotEmpty ? App.localStorage?.setString('baseUrl', textControllerBaseUrl.text) : null;
+    textControllerUsername.text.isNotEmpty ? App.localStorage?.setString('username', textControllerUsername.text) : null;
   }
 
 

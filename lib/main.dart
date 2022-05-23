@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertest/Screen/MoviePage.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import './globals.dart';
 
 void main() {
+  start();
   runApp(const MyApp());
+}
+
+// Cette méthode charge les données en localStorage de l'application
+Future start() async {
+  await App.init();
 }
 
 class MyApp extends StatelessWidget {
