@@ -34,7 +34,7 @@ class HttpService {
 
     try {
       res = await get(url, headers: {
-        "ApiKey": "8d116c0af172470f83a9b454e1ea7bb2"
+        "ApiKey": apiKey,
       }
       );
     } catch (e) {
@@ -70,7 +70,7 @@ class HttpService {
     // Encode Map to JSON
     var body = jsonEncode(data);
     // Envoi de la requête
-    Response res = await post(url, headers: {"Content-Type": "application/json", "ApiKey": "8d116c0af172470f83a9b454e1ea7bb2", "UserName": "ruben"}, body: body);
+    Response res = await post(url, headers: {"Content-Type": "application/json", "ApiKey": apiKey, "UserName": username}, body: body);
 
     if ( res.statusCode == 200 ) {
       var body = jsonDecode(res.body);
@@ -88,7 +88,7 @@ class HttpService {
     var url = Uri.parse("$baseUrl/v1/Request/movie");
 
     Response res = await get(url, headers: {
-        "ApiKey": "8d116c0af172470f83a9b454e1ea7bb2"
+        "ApiKey": apiKey,
       }
     );
 
@@ -98,6 +98,29 @@ class HttpService {
       return movies;
     } else {
       throw "Erreur de récupération des données";
+    }
+  }
+
+  ///
+  /// Récupère tous les profiles Radarr disponibles
+  ///
+  Future<String> syncProfiles() async {
+    var url = Uri.parse("$baseUrl/v1/Radarr/Profiles");
+
+    Response res = await get(url, headers: {
+        "ApiKey": apiKey,
+      }
+    );
+
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      // Convertir chaque objet json en string
+      List<String> profiles = body.map((dynamic item) => item.toString()).toList();
+      // Sauvegarde des profiles dans le localStorage
+      App.localStorage?.setStringList('profiles', profiles);
+      return "Données bien récupérées : ${profiles.length} profils trouvés.";
+    } else {
+      return "Erreur de récupération des données";
     }
   }
 
