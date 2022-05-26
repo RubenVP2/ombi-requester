@@ -9,3 +9,9 @@ class App {
     localStorage = await SharedPreferences.getInstance();
   }
 }
+
+class ErrorMessage {
+  static const String noInternet = "Aucune connexion internet";
+  static const String noDataFound = "Aucune donnée trouvée";
+  static const String noUrl = "Aucune url renseignée";
+}

@@ -23,10 +23,11 @@ class HttpService {
   ///
   /// Récupère les films populaires
   ///
-  Future<List<Movie>?> getPopular(int currentPosition, int amountToLoad, String typeRequest) async {
+  Future<List<Movie>?> getMovies(int currentPosition, int amountToLoad, String typeRequest) async {
     // Check pour savoir si l'url est correcte
     if (baseUrl.isEmpty) {
-      return null;
+      // Generation d'une erreur
+      return Future.error(ErrorMessage.noUrl);
     }
     // Récupération des films populaires
     var url = Uri.parse("$baseUrl/v2/Search/movie/${typeRequest.toLowerCase()}/$currentPosition/$amountToLoad");

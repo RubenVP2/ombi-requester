@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
@@ -155,7 +156,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Détail du film : ${widget.movie.title}"),
+        title: Text("Détails du film : ${widget.movie.title}"),
       ),
       // Scrollable content
       body: SingleChildScrollView(
@@ -172,12 +173,33 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Movie poster
-            Center(
-              child: Container(
-                height: 500,
-                padding: const EdgeInsets.all(8),
-                child: Image.network("https://image.tmdb.org/t/p/w500/${widget.movie.posterPath}"),
-              ),
+            Stack(
+              children: [
+                // Poster blur effect behing the poster
+                Container(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage("https://image.tmdb.org/t/p/w500/${widget.movie.posterPath}"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: Container(
+                      color: Colors.black.withOpacity(0.2),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Container(
+                    height: 500,
+                    padding: const EdgeInsets.all(8),
+                    child: Image.network("https://image.tmdb.org/t/p/w500/${widget.movie.posterPath}"),
+                  ),
+                ),
+              ]
             ),
             // Movie title
             Padding(

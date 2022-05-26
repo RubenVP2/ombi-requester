@@ -31,9 +31,9 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _writeData() async {
-    textControllerApiKey.text.isNotEmpty ? App.localStorage?.setString('apiKey', textControllerApiKey.text) : null;
-    textControllerBaseUrl.text.isNotEmpty ? App.localStorage?.setString('baseUrl', textControllerBaseUrl.text) : null;
-    textControllerUsername.text.isNotEmpty ? App.localStorage?.setString('username', textControllerUsername.text) : null;
+    App.localStorage?.setString('apiKey', textControllerApiKey.text.toString());
+    App.localStorage?.setString('baseUrl', textControllerBaseUrl.text.toString());
+    App.localStorage?.setString('username', textControllerUsername.text.toString());
   }
 
   @override
