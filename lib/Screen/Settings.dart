@@ -72,6 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 controller: textControllerBaseUrl,
                 decoration: const InputDecoration(
                   labelText: 'Base URL de l\'API',
+                  helperText: 'Exemple : http(s)://domaine.com/api',
                 ),
               ),
               const SizedBox(height: 15),

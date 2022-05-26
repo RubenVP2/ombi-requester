@@ -55,14 +55,14 @@ class HttpService {
   ///
   ///  Execute une requête d'ajout de film
   ///
-  Future<Map> addMovie(Movie movie) async {
+  Future<Map> addMovie(Movie movie, int quality) async {
     // Variable en dur pour la configuration de radarr
     var url = Uri.parse("$baseUrl/v1/Request/movie");
 
     Map data = {
       'theMovieDbId': movie.theMovieDbId,
       'languageCode': 'fr',
-      'qualityPathOverride': 4,
+      'qualityPathOverride': quality,
       'rootFolderOverride': 5,
       'requestOnBehalf': '91f4eeb2-7a9b-4103-9c39-6a35ed8b3e35',
       'is4kRequest': false,

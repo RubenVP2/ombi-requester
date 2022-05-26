@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Model/movie.dart';
+import '../Model/profiles.dart';
 import '../Service/http_service.dart';
 import '../globals.dart';
 
@@ -21,17 +22,22 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   final HttpService httpService = HttpService();
 
-  bool _isMovieRequested = false;
-
   late Future<Map> message;
+
+
+  bool _isMovieRequested = false;
 
   bool _isLoading = false;
 
-  // Controller
-  final textControllerQuality = TextEditingController();
+  bool _isProfileSync = false;
 
-  // Récupération de la list 'profiles' depuis le localStorage, décode en json et création d'un Map
-  List<dynamic> _profiles = jsonDecode(App.localStorage?.getString('profiles') ?? '[]');
+  // Controller
+  late String dropdownValue;
+
+  // Création d'une map pour stocker en key les id provenant du jsonDecode du localStorage profiles et la value = name
+  String stringJson = App.localStorage?.getString('profiles') ?? '';
+
+  List<Profile> profilesList = [];
 
   @override
   initState() {
@@ -41,8 +47,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         _isMovieRequested = value.any((element) => element.theMovieDbId == widget.movie.theMovieDbId);
       });
     });
-    for (String profile in _profiles) {
-      print(profile);
+    // Cast json to Profile class
+    if (stringJson != '') {
+      for (var profile in jsonDecode(stringJson)) {
+        profilesList.add(Profile.fromJson(profile));
+      }
+      dropdownValue = profilesList.first.name;
+      _isProfileSync = true;
     }
     super.initState();
   }
@@ -51,41 +62,89 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Ajouter le film à Radarr"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Choix du choix de la qualité dans un DropDown
-              DropdownButton<String>(
-                value: textControllerQuality.text,
-                items: [
-                ],
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      textControllerQuality.text = newValue;
-                    });
+        return _isProfileSync ?
+        // Le StatefulWidget pour le DropdownButton est nécessaire pour pouvoir utiliser le state lors du changement de valeur
+        AlertDialog(
+            title: const Text("Ajouter le film à Radarr"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Choix du choix de la qualité dans un DropDown
+                StatefulBuilder(
+                  builder: (context, setState) {
+                    return DropdownButton<String>(
+                      isExpanded: true,
+                      value: dropdownValue,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dropdownValue = newValue!;
+                        });
+                      },
+                      items: profilesList.map((Profile profile) {
+                        return DropdownMenuItem<String>(
+                          value: profile.name,
+                          child: Text(profile.name),
+                        );
+                      }).toList(),
+                    );
                   }
+                ),
+              ],
+            ),
+            actions: [
+              // Bouton d'annulation
+              TextButton(
+                child: const Text('Annuler'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              // Bouton d'ajout
+              TextButton(
+                child: const Text('Ajouter'),
+                onPressed: () {
+                  setState(() => _isLoading = true);
+                  // On ajoute le film à la liste des films demandés
+                  message = httpService.addMovie(widget.movie, profilesList.firstWhere((element) => element.name == dropdownValue).id);
+                  message.then((value) {
+                    // Apparition de la notification
+                    GFToast.showToast(
+                      value["message"],
+                      context,
+                      toastPosition: GFToastPosition.BOTTOM,
+                      toastDuration: 3,
+                      backgroundColor: Colors.deepPurple,
+                      trailing: const Icon(
+                        Icons.info,
+                        color: Colors.black,
+                      ),
+                    );
+                    // On change la variable qui permet de savoir si le film est déjà dans la liste
+                    if ( value["isError"] == "false" || value["isError"] == false ) {
+                      setState(() {
+                        _isMovieRequested = true;
+                        _isLoading = false;
+                      });
+                      Navigator.of(context).pop();
+                    }
+                  });
                 },
               ),
             ],
-          ),
+        )
+            :
+        // Si le localStorage n'est pas synchronisé on affiche un message d'erreur
+        AlertDialog(
+          title: const Text("Erreur"),
+          content: const Text("Veuillez synchroniser vos profiles"),
           actions: [
             // Bouton d'annulation
-            FlatButton(
+            TextButton(
               child: const Text('Annuler'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
-            ),
-            // Bouton d'ajout
-            FlatButton(
-              child: const Text('Ajouter'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+            )
           ],
         );
       },
@@ -122,7 +181,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             ),
             // Movie title
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               child: Text(
                 widget.movie.title,
                 style: const TextStyle(
@@ -133,7 +192,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             ),
             // Movie vote average rounded to 2 decimals and emojis for stars
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               child: Text(
                 widget.movie.voteAverage != 0 ?
                 "Note IMDB : ${widget.movie.voteAverage.toStringAsFixed(2)} / 10"
@@ -146,7 +205,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             ),
             // Movie overview
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               child: Text(
                 widget.movie.overview,
                 style: const TextStyle(
@@ -158,52 +217,25 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             _isMovieRequested
                 ?
             const Padding(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(10),
               child: GFButton(
                 onPressed: null,
-                text: "Ce film est déjà dans la liste",
-                color: Colors.purple,
+                text: "Ce film a déjà été ajouté.",
+                color: Colors.deepPurple,
                 type: GFButtonType.solid,
                 fullWidthButton: true,
               ),
             )
                 :
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               child: GFButton(
                 onPressed: () {
                   // Dialog pour choisir les paramètres de l'ajout
                   _showDialog();
-                  // Activation du loading
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  // On ajoute le film à la liste des films demandés
-                  message = httpService.addMovie(widget.movie);
-                  message.then((value) {
-                    // Apparition de la notification
-                    GFToast.showToast(
-                      value["message"],
-                      context,
-                      toastPosition: GFToastPosition.BOTTOM,
-                      toastDuration: 3,
-                      backgroundColor: Colors.purple,
-                      trailing: const Icon(
-                        Icons.info,
-                        color: Colors.black,
-                      ),
-                    );
-                    // On change la variable qui permet de savoir si le film est déjà dans la liste
-                    if ( value["isError"] == "false" || value["isError"] == false ) {
-                      setState(() {
-                        _isMovieRequested = true;
-                        _isLoading = false;
-                      });
-                    }
-                  });
                 },
                 text: "Ajouter à Radarr",
-                color: Colors.purple,
+                color: Colors.deepPurple,
                 fullWidthButton: true,
               ),
             ),

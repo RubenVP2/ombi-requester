@@ -58,11 +58,9 @@ class _MoviePageState extends State<MoviePage> {
         height: 275,
         child: Row(
           children: [
-            Center(
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Image.network("https://image.tmdb.org/t/p/w500/${movie.posterPath}"),
-              ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: Image.network("https://image.tmdb.org/t/p/w500/${movie.posterPath}"),
             ),
             Expanded(
               child: Container(
@@ -177,7 +175,7 @@ class _MoviePageState extends State<MoviePage> {
                             text: 'Charger plus',
                             type: GFButtonType.solid,
                             size: GFSize.LARGE,
-                            color: Colors.purple,
+                            color: Colors.deepPurple,
                           ),
                         ),
                           // Si plusieurs fois le bouton a été appuyé, alors on propose de reset le nombre de film chargé pour revenir au début
@@ -194,14 +192,14 @@ class _MoviePageState extends State<MoviePage> {
                               text: 'Repartir au plus populaire',
                               type: GFButtonType.solid,
                               size: GFSize.LARGE,
-                              color: Colors.purple,
+                              color: Colors.deepPurple,
                             )
                                 :
                             Container(),
                           ),
                       ],
                     );
-                  } else if ( snapshot.hasError || snapshot.data == null ) {
+                  } else if ( snapshot.hasError ) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
