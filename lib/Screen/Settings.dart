@@ -24,16 +24,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _loadData() async {
     setState(() {
-      textControllerApiKey.text = App.localStorage?.getString('apiKey') ?? '';
-      textControllerBaseUrl.text = App.localStorage?.getString('baseUrl') ?? '';
-      textControllerUsername.text = App.localStorage?.getString('username') ?? '';
+      textControllerApiKey.text = App.getString("apiKey");
+      textControllerBaseUrl.text = App.getString("baseUrl");
+      textControllerUsername.text = App.getString("username");
     });
   }
 
   Future<void> _writeData() async {
-    App.localStorage?.setString('apiKey', textControllerApiKey.text.toString());
-    App.localStorage?.setString('baseUrl', textControllerBaseUrl.text.toString());
-    App.localStorage?.setString('username', textControllerUsername.text.toString());
+    App.setString('apiKey', textControllerApiKey.text.toString());
+    App.setString('baseUrl', textControllerBaseUrl.text.toString());
+    App.setString('username', textControllerUsername.text.toString());
   }
 
   @override
@@ -118,8 +118,8 @@ class _SettingsPageState extends State<SettingsPage> {
               _isLoading
                   ?
               const Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const CircularProgressIndicator(),
+                  padding: EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(),
                 )
                   :
               GFButton(
@@ -128,7 +128,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: () {
                   setState(() => _isLoading = true);
                   // Enregistrement en localStorage de la date courante pour la synchronisation formatter jj/mm/aaaa hh:mm:ss
-                  App.localStorage?.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
+                  App.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
                   httpService.syncProfiles().then((value) {
                     GFToast.showToast(
                       value,
@@ -149,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
               // Show last sync
               const SizedBox(height: 15),
               Text(
-                App.localStorage?.getString('lastSync') == null ? '' : 'Dernière synchronisation : ${App.localStorage?.getString('lastSync')}',
+                App.getString('lastSync') == '' ? '' : 'Dernière synchronisation : ${App.getString('lastSync')}',
                 style:  const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.normal,

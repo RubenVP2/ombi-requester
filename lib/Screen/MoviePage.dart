@@ -171,7 +171,6 @@ class _MoviePageState extends State<MoviePage> {
             child: FutureBuilder(
                 future: futureMovies,
                 builder: (context, AsyncSnapshot snapshot) {
-
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
                       return const Center(

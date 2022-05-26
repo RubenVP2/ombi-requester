@@ -16,9 +16,9 @@ class HttpService {
 
   HttpService() {
     // On récupère les données de l'API
-    baseUrl = App.localStorage?.getString('baseUrl') ?? "";
-    apiKey = App.localStorage?.getString('apiKey') ?? "";
-    username = App.localStorage?.getString('username') ?? "";
+    baseUrl = App.getString("baseUrl");
+    apiKey = App.getString("apiKey");
+    username = App.getString("username");
   }
   ///
   /// Récupère les films populaires
@@ -27,7 +27,7 @@ class HttpService {
     // Check pour savoir si l'url est correcte
     if (baseUrl.isEmpty) {
       // Generation d'une erreur
-      return Future.error(ErrorMessage.noUrl);
+      return Future.error("Url invalide, veuillez vérifier les données de l'API dans les paramètres");
     }
     // Récupération des films populaires
     var url = Uri.parse("$baseUrl/v2/Search/movie/${typeRequest.toLowerCase()}/$currentPosition/$amountToLoad");
@@ -115,7 +115,7 @@ class HttpService {
 
     if (res.statusCode == 200) {
       // Sauvegarde des profiles dans le localStorage
-      App.localStorage?.setString('profiles', res.body);
+      App.setString('profiles', res.body);
       return "Données bien récupérées : ${jsonDecode(res.body).length} profils trouvés.";
     } else {
       return "Erreur de récupération des données";

@@ -36,7 +36,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   late String dropdownValue;
 
   // Création d'une map pour stocker en key les id provenant du jsonDecode du localStorage profiles et la value = name
-  String stringJson = App.localStorage?.getString('profiles') ?? '';
+  String stringJson = App.getString('profiles');
 
   List<Profile> profilesList = [];
 
