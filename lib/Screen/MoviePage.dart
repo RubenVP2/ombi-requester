@@ -196,6 +196,7 @@ class _MoviePageState extends State<MoviePage> {
                         return ListView(
                           shrinkWrap: true,
                           controller: _scrollController,
+                          physics: const BouncingScrollPhysics(),
                           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
                           children: [
                             for (Movie movie in movies)
