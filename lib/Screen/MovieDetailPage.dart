@@ -268,6 +268,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 height: 220,
                                 width: double.maxFinite,
                                 child: ListView(
+                                    physics: const BouncingScrollPhysics(),
                                     padding: const EdgeInsets.all(10),
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,

@@ -15,8 +15,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   HttpService httpService = HttpService();
 
-  bool _isLoading = false;
-
   // Controller for the text field
   final textControllerApiKey = TextEditingController();
   final textControllerBaseUrl = TextEditingController();
@@ -132,7 +130,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     );
                   } else {
-                    setState(() => _isLoading = true);
                     // Enregistrement en localStorage de la date courante pour la synchronisation formatter jj/mm/aaaa hh:mm:ss
                     App.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
                     httpService.syncProfiles().then((value) {
@@ -148,7 +145,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       );
                     });
-                    setState(() => _isLoading = false);
                   }
                 },
                 text: 'Synchroniser les profiles',

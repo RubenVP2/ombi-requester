@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart';
 import '../Model/movieDetail.dart';
 import '../Model/movie.dart';
@@ -31,9 +32,9 @@ class HttpService {
       return Future.error("Url invalide, veuillez vérifier les données de l'API dans les paramètres");
     }
     // Récupération des films populaires
-    var url = Uri.parse("${baseUrl}/v2/Search/movie/${typeRequest.toLowerCase()}/$currentPosition/$amountToLoad");
+    var url = Uri.parse("$baseUrl/v2/Search/movie/${typeRequest.toLowerCase()}/$currentPosition/$amountToLoad");
     late Response res;
-
+    log("Requête de récupération des films sur l'url : $url", name: "HttpService", error: false );
     try {
       res = await get(url, headers: {
         "ApiKey": apiKey,
@@ -45,6 +46,10 @@ class HttpService {
       }
     }
     if (res.statusCode == 200) {
+      if (kDebugMode) {
+        log("Requête de récupération des films réussie", name: "HttpService", error: false );
+        log("Body : ${res.body}", name: "HttpService", error: false );
+      }
       List<dynamic> body = jsonDecode(res.body);
       List<Movie> movies = body.map((dynamic item) => Movie.fromJson(item)).toList();
       return movies;

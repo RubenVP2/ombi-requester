@@ -26,6 +26,8 @@ class _MoviePageState extends State<MoviePage> {
 
   String dropdownValue = 'Popular';
 
+  static const String errorMessage = "Erreur lors du chargement des films, veuillez vérifier votre connexion internet ou l'URL de l'api.";
+
   static const menuItems = <String>['Popular', 'TopRated', 'Upcoming', 'Requested'];
 
   final List<DropdownMenuItem<String>> _dropDownMenuItems = menuItems
@@ -185,62 +187,68 @@ class _MoviePageState extends State<MoviePage> {
                             Icon(Icons.error_outline, color: Colors.red, size: 60),
                             SizedBox(height: 20),
                             Text(
-                              "Erreur lors du chargement des films, veuillez vérifier votre connexion internet ou l'URL de l'api.",
+                              errorMessage,
                               textAlign: TextAlign.center,
                             ),
                           ],
                         );
                       } else {
                         // Cas passant
-                        List<Movie> movies = snapshot.data;
-                        return ListView(
-                          shrinkWrap: true,
-                          controller: _scrollController,
-                          physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
-                          children: [
-                            for (Movie movie in movies)
-                              customCard(movie),
-                            // Button for load more content
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: GFButton(
-                                onPressed: () {
-                                  setState(() {
-                                    // Load more content when button is pressed
-                                    currentNumberOfMovieLoaded += amountToLoad;
-                                    futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
-                                  });
-                                  // Scroll to the top of the list
-                                  _scrollToTop();
-                                },
-                                text: 'Charger plus',
-                                type: GFButtonType.solid,
-                                size: GFSize.LARGE,
-                                color: Colors.deepPurple,
+                        if ( snapshot.data != null ) {
+                          List<Movie> movies = snapshot.data;
+                          return ListView(
+                            shrinkWrap: true,
+                            controller: _scrollController,
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
+                            children: [
+                              for (Movie movie in movies)
+                                customCard(movie),
+                              // Button for load more content
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: GFButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      // Load more content when button is pressed
+                                      currentNumberOfMovieLoaded += amountToLoad;
+                                      futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
+                                    });
+                                    // Scroll to the top of the list
+                                    _scrollToTop();
+                                  },
+                                  text: 'Charger plus',
+                                  type: GFButtonType.solid,
+                                  size: GFSize.LARGE,
+                                  color: Colors.deepPurple,
+                                ),
                               ),
-                            ),
-                            // Si plusieurs fois le bouton a été appuyé, alors on propose de reset le nombre de film chargé pour revenir au début
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: currentNumberOfMovieLoaded == 20 ? Container() :
-                              GFButton(
-                                onPressed: () {
-                                  setState(() {
-                                    currentNumberOfMovieLoaded = 20;
-                                    futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
-                                  });
-                                  // Scroll to top
-                                  _scrollToTop();
-                                },
-                                text: 'Repartir au plus populaire',
-                                type: GFButtonType.solid,
-                                size: GFSize.LARGE,
-                                color: Colors.deepPurple,
+                              // Si plusieurs fois le bouton a été appuyé, alors on propose de reset le nombre de film chargé pour revenir au début
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: currentNumberOfMovieLoaded == 20 ? Container() :
+                                GFButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      currentNumberOfMovieLoaded = 20;
+                                      futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
+                                    });
+                                    // Scroll to top
+                                    _scrollToTop();
+                                  },
+                                  text: 'Repartir au plus populaire',
+                                  type: GFButtonType.solid,
+                                  size: GFSize.LARGE,
+                                  color: Colors.deepPurple,
+                                ),
                               ),
-                            ),
-                          ],
-                        );
+                            ],
+                          );
+                        } else {
+                          return const Center(
+                            child: Text(errorMessage),
+                          );
+                        }
                       }
                     default:
                       return const Center(child: CircularProgressIndicator());
