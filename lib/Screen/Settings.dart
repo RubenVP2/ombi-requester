@@ -115,34 +115,41 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 30),
               // Button pour sync les profiles de radarr
-              _isLoading
-                  ?
-              const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
-                )
-                  :
               GFButton(
                 color: Colors.purple,
                 size: GFSize.LARGE,
                 onPressed: () {
-                  setState(() => _isLoading = true);
-                  // Enregistrement en localStorage de la date courante pour la synchronisation formatter jj/mm/aaaa hh:mm:ss
-                  App.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
-                  httpService.syncProfiles().then((value) {
+                  if ( textControllerBaseUrl.text == '' || textControllerApiKey.text == '' || textControllerUsername.text == '' ) {
                     GFToast.showToast(
-                      value,
+                      "Veuillez remplir tous les champs",
                       context,
                       toastPosition: GFToastPosition.BOTTOM,
                       toastDuration: 3,
                       backgroundColor: Colors.purple,
                       trailing: const Icon(
-                        Icons.info,
+                        Icons.error,
                         color: Colors.black,
                       ),
                     );
-                  });
-                  setState(() => _isLoading = false);
+                  } else {
+                    setState(() => _isLoading = true);
+                    // Enregistrement en localStorage de la date courante pour la synchronisation formatter jj/mm/aaaa hh:mm:ss
+                    App.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
+                    httpService.syncProfiles().then((value) {
+                      GFToast.showToast(
+                        value,
+                        context,
+                        toastPosition: GFToastPosition.BOTTOM,
+                        toastDuration: 3,
+                        backgroundColor: Colors.purple,
+                        trailing: const Icon(
+                          Icons.info,
+                          color: Colors.black,
+                        ),
+                      );
+                    });
+                    setState(() => _isLoading = false);
+                  }
                 },
                 text: 'Synchroniser les profiles',
               ),

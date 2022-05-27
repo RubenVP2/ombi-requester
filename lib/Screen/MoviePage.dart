@@ -81,10 +81,10 @@ class _MoviePageState extends State<MoviePage> {
                       child: ListTile(
                         title: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5) ,
-                            child: Text(movie.title)
+                            child: Text(movie.title, maxLines: 2, overflow: TextOverflow.ellipsis),
                         ),
                         subtitle: movie.overview.isEmpty ? const Text("Synopsis non renseigné.") : Text(
-                          maxLines: 14,
+                          maxLines: 12,
                           movie.overview,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -139,7 +139,7 @@ class _MoviePageState extends State<MoviePage> {
     bool isDarkMode = AdaptiveTheme.of(context).mode.isDark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ombi Requester'),
+        title: const Center(child: Text('Ombi Requester')),
         // Bouton à droite pour accéder à la page de configuration
         leading: IconButton(
           icon: const Icon(Icons.settings),

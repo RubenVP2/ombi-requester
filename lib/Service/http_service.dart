@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../Model/movieDetail.dart';
 import '../Model/movie.dart';
 import '../globals.dart';
+import 'dart:developer';
 
 ///
 /// Classe permettant de récupérer les données depuis l'API
@@ -30,7 +31,7 @@ class HttpService {
       return Future.error("Url invalide, veuillez vérifier les données de l'API dans les paramètres");
     }
     // Récupération des films populaires
-    var url = Uri.parse("$baseUrl/v2/Search/movie/${typeRequest.toLowerCase()}/$currentPosition/$amountToLoad");
+    var url = Uri.parse("${baseUrl}/v2/Search/movie/${typeRequest.toLowerCase()}/$currentPosition/$amountToLoad");
     late Response res;
 
     try {
@@ -40,10 +41,9 @@ class HttpService {
       );
     } catch (e) {
       if (kDebugMode) {
-        print(e);
+        log(e.toString());
       }
     }
-
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<Movie> movies = body.map((dynamic item) => Movie.fromJson(item)).toList();
@@ -122,4 +122,21 @@ class HttpService {
     }
   }
 
+  ///
+  /// Récupère plus d'informations sur un films en fonction de son id
+  ///
+  Future<MovieDetail> getMovieById(int id) async {
+    var url = Uri.parse("$baseUrl/v2/Search/movie/$id");
+
+    Response res = await get(url, headers: {
+        "ApiKey": apiKey,
+    });
+
+    if (res.statusCode == 200) {
+      dynamic body = jsonDecode(res.body);
+      return MovieDetail.fromJson(body);
+    } else {
+      throw "Erreur de récupération des données";
+    }
+  }
 }
