@@ -1,5 +1,5 @@
 # fluttertest
-[![Codemagic build status](https://api.codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/status_badge.svg)](https://codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/latest_build)
+[![Codemagic build status](https://api.codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/status_badge.svg)](https://codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/latest_build)  
 A new Flutter project.
 
 ## Getting Started
