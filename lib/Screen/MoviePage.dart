@@ -64,39 +64,41 @@ class _MoviePageState extends State<MoviePage> {
           ),
         );
       },
-      child: SizedBox(
-        height: 275,
-        child: Row(
-          children: [
-            Container(
-              width: 200,
-              height: 450,
-              padding: const EdgeInsets.all(8),
-              child: Image.network("https://image.tmdb.org/t/p/w500/${movie.posterPath}"),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.topLeft,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ListTile(
-                        title: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5) ,
-                            child: Text(movie.title, maxLines: 2, overflow: TextOverflow.ellipsis),
-                        ),
-                        subtitle: movie.overview.isEmpty ? const Text("Synopsis non renseigné.") : Text(
-                          maxLines: 12,
-                          movie.overview,
-                          overflow: TextOverflow.ellipsis,
+      child: Card(
+        child: SizedBox(
+          height: 275,
+          child: Row(
+            children: [
+              Container(
+                width: 200,
+                height: 450,
+                padding: const EdgeInsets.all(8),
+                child: Image.network("https://image.tmdb.org/t/p/w500/${movie.posterPath}"),
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          title: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5) ,
+                              child: Text(movie.title, maxLines: 2, overflow: TextOverflow.ellipsis),
+                          ),
+                          subtitle: movie.overview.isEmpty ? const Text("Synopsis non renseigné.") : Text(
+                            maxLines: 12,
+                            movie.overview,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

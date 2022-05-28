@@ -194,9 +194,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       ),
                       Center(
                         child: Container(
-                          height: 500,
+                          height: MediaQuery.of(context).size.height / 1.3,
                           padding: const EdgeInsets.all(8),
-                          child: Image.network("https://image.tmdb.org/t/p/w500/${widget.movie.posterPath}"),
+                          child: Image.network("https://image.tmdb.org/t/p/w500/${widget.movie.posterPath}")
                         ),
                       ),
                     ]
@@ -265,7 +265,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 }).toList(),
                               ),
                               SizedBox(
-                                height: 220,
+                                height: MediaQuery.of(context).size.height / 3.15,
                                 width: double.maxFinite,
                                 child: ListView(
                                     physics: const BouncingScrollPhysics(),
@@ -275,7 +275,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                     children: [
                                       for (Cast cast in movieDetailFromSnapshot.getCast)
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 30),
+                                          padding: const EdgeInsets.only(right: 30, top: 20),
                                           child: Column(
                                             children: [
                                               // Actor avatar
