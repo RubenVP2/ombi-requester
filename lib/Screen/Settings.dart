@@ -52,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text('Paramètres'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
               TextField(
                 controller: textControllerBaseUrl,
                 decoration: const InputDecoration(
-                  labelText: 'Base URL de l\'API',
+                  labelText: 'Url de l\'API',
                   helperText: 'Exemple : http(s)://domaine.com/api',
                 ),
               ),
@@ -77,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
               TextField(
                 controller: textControllerUsername,
                 decoration: const InputDecoration(
-                  labelText:  'Username utilisateur Ombi',
+                  labelText:  'Pseudo utilisateur Ombi',
                 )
               ),
               // Information
@@ -93,7 +93,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 30),
               // Button to save settings
               GFButton(
-                color: Colors.purple,
+                color: Colors.deepPurple,
                 size: GFSize.LARGE,
                 onPressed: () {
                   _writeData();
@@ -102,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     context,
                     toastPosition: GFToastPosition.BOTTOM,
                     toastDuration: 3,
-                    backgroundColor: Colors.purple,
+                    backgroundColor: Colors.deepPurple,
                     trailing: const Icon(
                       Icons.check,
                       color: Colors.black,
@@ -114,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 30),
               // Button pour sync les profiles de radarr
               GFButton(
-                color: Colors.purple,
+                color: Colors.deepPurple,
                 size: GFSize.LARGE,
                 onPressed: () {
                   if ( textControllerBaseUrl.text == '' || textControllerApiKey.text == '' || textControllerUsername.text == '' ) {
@@ -123,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       context,
                       toastPosition: GFToastPosition.BOTTOM,
                       toastDuration: 3,
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Colors.deepPurple,
                       trailing: const Icon(
                         Icons.error,
                         color: Colors.black,
@@ -138,7 +138,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         context,
                         toastPosition: GFToastPosition.BOTTOM,
                         toastDuration: 3,
-                        backgroundColor: Colors.purple,
+                        backgroundColor: Colors.deepPurple,
                         trailing: const Icon(
                           Icons.info,
                           color: Colors.black,
@@ -152,7 +152,7 @@ class _SettingsPageState extends State<SettingsPage> {
               // Show last sync
               const SizedBox(height: 15),
               Text(
-                App.getString('lastSync') == '' ? '' : 'Dernière synchronisation : ${App.getString('lastSync')}',
+                App.getString('lastSync') == '' ? '' : 'Dernière synchronisation le : ${App.getString('lastSync')}',
                 style:  const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.normal,

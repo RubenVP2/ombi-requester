@@ -13,6 +13,8 @@ import '../globals.dart';
 
 class MovieDetailPage extends StatefulWidget {
 
+  static const String routeName = '/movieDetail';
+
   final Movie movie;
 
   const MovieDetailPage({Key? key, required this.movie}) : super(key: key);
@@ -70,7 +72,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         return _isProfileSync ?
         // Le StatefulWidget pour le DropdownButton est nécessaire pour pouvoir utiliser le state lors du changement de valeur
         AlertDialog(
-            title: const Text("Ajouter le film à Radarr"),
+            title: const Text("Sélectionnez un profil"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -140,8 +142,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             :
         // Si le localStorage n'est pas synchronisé on affiche un message d'erreur
         AlertDialog(
-          title: const Text("Erreur"),
-          content: const Text("Veuillez synchroniser vos profiles"),
+          title: const Text("Profils non synchronisés"),
+          content: const Text("Veuillez synchroniser vos profils"),
           actions: [
             // Bouton d'annulation
             TextButton(
@@ -216,9 +218,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, left: 10),
                   child: Text(
-                    widget.movie.voteAverage != 0 ?
-                    "Note IMDB : ${widget.movie.voteAverage.toStringAsFixed(2)} / 10"
-                        : "Note IMDB : Non renseignée",
+                    widget.movie.voteAverage == 0 ? "Note IMDB : Non renseignée" :
+                    "Note IMDB : ${widget.movie.voteAverage.toStringAsFixed(2)} / 10",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -229,7 +230,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
-                    widget.movie.overview.isEmpty ? "Aucun synopsis disponible" : widget.movie.overview,
+                    widget.movie.overview.isEmpty ? "Aucun synopsis disponible pour ce film." : widget.movie.overview,
                     style: const TextStyle(
                       fontSize: 16,
                     ),
@@ -247,7 +248,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       case ConnectionState.done:
                         if (snapshot.hasError) {
                           return const Center(
-                            child: Text("Erreur lors de la récupération des acteurs"),
+                            child: Text("Oops erreur lors de la récupération des acteurs"),
                           );
                         } else {
                           MovieDetail? movieDetailFromSnapshot = snapshot.data;
@@ -265,7 +266,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                 }).toList(),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.height / 3.15,
+                                // Make SizedBox dynamic height to avoid overflow error
+                                // This SizedBox is for row spacing
+                                height: MediaQuery.of(context).size.height / 2,
                                 width: double.maxFinite,
                                 child: ListView(
                                     physics: const BouncingScrollPhysics(),
@@ -339,7 +342,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       // Dialog pour choisir les paramètres de l'ajout
                       _showDialog();
                     },
-                    text: "Ajouter à Radarr",
+                    text: "Demander le film",
                     color: Colors.deepPurple,
                     fullWidthButton: true,
                   ),

@@ -28,15 +28,24 @@ class _MoviePageState extends State<MoviePage> {
 
   static const String errorMessage = "Erreur lors du chargement des films, veuillez vérifier votre connexion internet ou l'URL de l'api.";
 
-  static const menuItems = <String>['Popular', 'TopRated', 'Upcoming', 'Requested'];
+  // La map contient en key la valeur française et en value la valeur anglaise
+  static const Map<String, String> dropdownItemsMap = {
+    'Les plus populaires': 'Popular',
+    'Les mieux notés': 'TopRated',
+    'A venir': 'Upcoming',
+    'Demandé': 'Requested',
+  };
 
-  final List<DropdownMenuItem<String>> _dropDownMenuItems = menuItems
-      .map(
-        (String value) => DropdownMenuItem<String>(
-          value: value,
-          child: Padding( padding: const EdgeInsets.only(left: 15), child: Text(value)),
+  final List<DropdownMenuItem<String>> _dropDownMenuItems =
+    dropdownItemsMap.keys.map((String key) {
+      return DropdownMenuItem<String>(
+        value: dropdownItemsMap[key],
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(key),
         ),
-      ).toList();
+      );
+    }).toList();
 
   final ScrollController _scrollController = ScrollController();
 
@@ -57,11 +66,10 @@ class _MoviePageState extends State<MoviePage> {
     // On tap, open MovieDetailPage
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MovieDetailPage(movie: movie),
-          ),
+        // Navigate to the screen named "MovieDetailPage" that show the movie detail
+        Navigator.pushNamed(context,
+          MovieDetailPage.routeName,
+          arguments: movie,
         );
       },
       child: Card(
@@ -112,7 +120,6 @@ class _MoviePageState extends State<MoviePage> {
         padding: EdgeInsets.only(right: 10),
         child: Icon(Icons.filter_list_alt),
       ),
-      elevation: 16,
       onChanged: (String? newValue) {
         if ( newValue != null && newValue != dropdownValue) {
           setState(() {
@@ -148,7 +155,7 @@ class _MoviePageState extends State<MoviePage> {
         leading: IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+            Navigator.of(context).pushNamed('/settings');
           },
         ),
         // Add a button to toggle theme on the AppBar
@@ -216,8 +223,6 @@ class _MoviePageState extends State<MoviePage> {
                                       currentNumberOfMovieLoaded += amountToLoad;
                                       futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
                                     });
-                                    // Scroll to the top of the list
-                                    _scrollToTop();
                                   },
                                   text: 'Charger plus',
                                   type: GFButtonType.solid,
@@ -235,15 +240,23 @@ class _MoviePageState extends State<MoviePage> {
                                       currentNumberOfMovieLoaded = 20;
                                       futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
                                     });
-                                    // Scroll to top
-                                    _scrollToTop();
                                   },
-                                  text: 'Repartir au plus populaire',
+                                  text: 'Repartir au début de la recherche',
                                   type: GFButtonType.solid,
                                   size: GFSize.LARGE,
                                   color: Colors.deepPurple,
                                 ),
                               ),
+                              // If we are at the end of the page, we display a deepPurple floating action button to scroll to the top
+                              if ( MediaQuery.of(context).viewInsets.bottom == 0 )
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: FloatingActionButton(
+                                    backgroundColor: Colors.deepPurple,
+                                    onPressed: _scrollToTop,
+                                    child: const Icon(Icons.arrow_upward),
+                                  ),
+                                ),
                             ],
                           );
                         } else {
