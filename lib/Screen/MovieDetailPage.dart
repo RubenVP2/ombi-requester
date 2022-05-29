@@ -11,6 +11,7 @@ import '../Model/movieDetail.dart';
 import '../Model/profiles.dart';
 import '../Service/http_service.dart';
 import '../globals.dart';
+import 'package:fswitch_nullsafety/fswitch_nullsafety.dart';
 
 class MovieDetailPage extends StatefulWidget {
 
@@ -37,6 +38,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   bool _isProfileSync = false;
 
   bool _isMovieSync = false;
+
+  bool _is4kRequested = false;
 
   late Future<MovieDetail> movieDetail;
 
@@ -124,6 +127,31 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     );
                   }
                 ),
+                // Switch for 4k
+                Row(
+                  // Spacing between the switch and the text
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Demander 4k ?'),
+                    FSwitch(
+                      width: 65,
+                      open: _is4kRequested,
+                      openColor: Colors.deepPurple,
+                      openChild: const Text(
+                          '4k',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11)
+                      ),
+
+                      onChanged: (bool value) {
+                        setState(() {
+                          _is4kRequested = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
             actions: [
@@ -143,7 +171,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   // On ajoute le film à la liste des films demandés
                   message = httpService.addMovie(
                       widget.movie, profilesList.firstWhere((element) => element.name == dropdownValueProfiles).id,
-                      rootPathList.firstWhere((element) => element.path == dropdownValueRootFolder).id
+                      rootPathList.firstWhere((element) => element.path == dropdownValueRootFolder).id,
+                      _is4kRequested
                   );
                   message.then((value) {
                     // Apparition de la notification

@@ -17,15 +17,16 @@ class _MoviePageState extends State<MoviePage> {
 
   final HttpService httpService = HttpService();
 
-  int currentNumberOfMovieLoaded = 20;
+  int currentMediaLoaded = 20;
 
   final int amountToLoad = 20;
 
+  // List of movies to display
   late Future<List<Movie>?> futureMovies;
 
   String dropdownValue = 'Popular';
 
-  static const String errorMessage = "Erreur lors du chargement des films, veuillez vérifier votre connexion internet ou l'URL de l'api.";
+  static const String errorMessage = "Erreur lors du chargement, veuillez vérifier votre connexion internet ou les paramètres de l'api.";
 
   // La map contient en key la valeur française et en value la valeur anglaise
   static const Map<String, String> dropdownItemsMap = {
@@ -222,7 +223,7 @@ class _MoviePageState extends State<MoviePage> {
           setState(() {
             dropdownValue = newValue;
             // Reset curentNumberOfMovieLoaded to default value
-            currentNumberOfMovieLoaded = 20;
+            currentMediaLoaded = 20;
           });
           // Appel de la fonction qui va récupérer les films et les afficher
           futureMovies = httpService.getMovies(0, amountToLoad, dropdownValue);
@@ -271,12 +272,12 @@ class _MoviePageState extends State<MoviePage> {
                 }
               },
               closeChild: const Icon(Icons.sunny, size: 16, color: Colors.white,),
-              // reverse icon for dark mode 
+              // reverse icon for dark mode
               openChild: Transform.scale(
                 scaleX: -1,
                 child: const Icon(
-                  Icons.brightness_3_sharp, 
-                  size: 16, 
+                  Icons.brightness_3_sharp,
+                  size: 16,
                   color: Colors.black,
                 ),
               ),
@@ -334,8 +335,8 @@ class _MoviePageState extends State<MoviePage> {
                                   onPressed: () {
                                     setState(() {
                                       // Load more content when button is pressed
-                                      currentNumberOfMovieLoaded += amountToLoad;
-                                      futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
+                                      currentMediaLoaded += amountToLoad;
+                                      futureMovies = httpService.getMovies(currentMediaLoaded, amountToLoad, dropdownValue);
                                     });
                                   },
                                   text: 'Charger plus',
@@ -347,12 +348,12 @@ class _MoviePageState extends State<MoviePage> {
                               // Si plusieurs fois le bouton a été appuyé, alors on propose de reset le nombre de film chargé pour revenir au début
                               Padding(
                                 padding: const EdgeInsets.all(8),
-                                child: currentNumberOfMovieLoaded == 20 ? Container() :
+                                child: currentMediaLoaded == 20 ? Container() :
                                 GFButton(
                                   onPressed: () {
                                     setState(() {
-                                      currentNumberOfMovieLoaded = 20;
-                                      futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
+                                      currentMediaLoaded = 20;
+                                      futureMovies = httpService.getMovies(currentMediaLoaded, amountToLoad, dropdownValue);
                                     });
                                   },
                                   text: 'Repartir au début de la recherche',
