@@ -147,22 +147,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   } else {
                     // Enregistrement en localStorage de la date courante pour la synchronisation formatter jj/mm/aaaa hh:mm:ss
                     App.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
-                    httpService.syncProfiles().then((value) {
-                      GFToast.showToast(
-                        value,
-                        context,
-                        toastPosition: GFToastPosition.BOTTOM,
-                        toastDuration: 3,
-                        backgroundColor: Colors.deepPurple,
-                        trailing: const Icon(
-                          Icons.info,
-                          color: Colors.white,
-                        ),
+                    httpService.syncProfiles().then((profileResponse) {
+                      httpService.syncRootPath().then((rootPathResponse) =>
+                          GFToast.showToast(
+                            "$rootPathResponse\n$profileResponse",
+                            context,
+                            toastPosition: GFToastPosition.BOTTOM,
+                            toastDuration: 3,
+                            backgroundColor: Colors.deepPurple,
+                            trailing: const Icon(
+                              Icons.info,
+                              color: Colors.white,
+                            ),
+                          )
                       );
                     });
                   }
                 },
-                text: 'Synchroniser les profils',
+                text: 'Synchroniser les profils et répertoires',
               ),
               // Show last sync
               const SizedBox(height: 15),

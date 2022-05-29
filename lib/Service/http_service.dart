@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:fluttertest/Model/rootFolder.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart';
 import '../Model/movieDetail.dart';
@@ -61,7 +62,7 @@ class HttpService {
   ///
   ///  Execute une requête d'ajout de film
   ///
-  Future<Map> addMovie(Movie movie, int quality) async {
+  Future<Map> addMovie(Movie movie, int quality, int rootFolderOverride) async {
     // Variable en dur pour la configuration de radarr
     var url = Uri.parse("$baseUrl/v1/Request/movie");
 
@@ -69,8 +70,7 @@ class HttpService {
       'theMovieDbId': movie.theMovieDbId,
       'languageCode': 'fr',
       'qualityPathOverride': quality,
-      'rootFolderOverride': 5,
-      'requestOnBehalf': '91f4eeb2-7a9b-4103-9c39-6a35ed8b3e35',
+      'rootFolderOverride': rootFolderOverride,
       'is4kRequest': false,
     };
     // Encode Map to JSON
@@ -121,7 +121,7 @@ class HttpService {
     if (res.statusCode == 200) {
       // Sauvegarde des profiles dans le localStorage
       App.setString('profiles', res.body);
-      return "Données bien récupérées : ${jsonDecode(res.body).length} profils trouvés.";
+      return "Données bien récupérées : ${jsonDecode(res.body).length} profils trouvé(s).";
     } else {
       return "Erreur de récupération des données";
     }
@@ -140,6 +140,28 @@ class HttpService {
     if (res.statusCode == 200) {
       dynamic body = jsonDecode(res.body);
       return MovieDetail.fromJson(body);
+    } else {
+      throw "Erreur de récupération des données";
+    }
+  }
+
+  ///
+  /// Récupère le rootPathFolder
+  ///
+  Future<String> syncRootPath() async {
+    var url = Uri.parse("$baseUrl/v1/Radarr/RootFolders");
+
+    Response res = await get(url, headers: {
+        "ApiKey": apiKey,
+    });
+
+    if (res.statusCode == 200) {
+      if (kDebugMode) {
+        log("Requête de récupération des films réussie", name: "HttpService", error: false );
+        log("Body : ${res.body}", name: "HttpService", error: false );
+      }
+      App.setString('rootPath', res.body);
+      return "Données bien récupérées : ${jsonDecode(res.body).length} répertoires trouvé(s).";
     } else {
       throw "Erreur de récupération des données";
     }

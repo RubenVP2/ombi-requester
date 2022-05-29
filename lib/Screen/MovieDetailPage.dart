@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertest/Model/rootFolder.dart';
 import 'package:getwidget/getwidget.dart';
 import '../Model/cast.dart';
 import '../Model/genre.dart';
@@ -35,27 +36,38 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   bool _isProfileSync = false;
 
+  bool _isMovieSync = false;
+
   late Future<MovieDetail> movieDetail;
 
   // Controller
-  late String dropdownValue;
+  late String dropdownValueProfiles;
+  late String dropdownValueRootFolder;
 
   // Création d'une map pour stocker en key les id provenant du jsonDecode du localStorage profiles et la value = name
   String stringJson = App.getString('profiles');
-
   List<Profile> profilesList = [];
+
+  String stringJsonRootPath = App.getString('rootPath');
+  List<RootFolder> rootPathList = [];
 
   @override
   initState() {
     // isMovie requested ?
     _isMovieRequested = widget.movie.requested;
-    // Cast json to Profile class
-    if (stringJson != '') {
+    if (stringJson != '' && stringJson != null) {
+      // Convert string to json
       for (var profile in jsonDecode(stringJson)) {
         profilesList.add(Profile.fromJson(profile));
       }
-      dropdownValue = profilesList.first.name;
+      dropdownValueProfiles = profilesList.first.name;
       _isProfileSync = true;
+      // Convert string to json
+      for (var rootPath in jsonDecode(stringJsonRootPath)) {
+        rootPathList.add(RootFolder.fromJson(rootPath));
+      }
+      dropdownValueRootFolder = rootPathList.first.path;
+      _isMovieSync = true;
     }
     movieDetail = httpService.getMovieById(int.parse(widget.movie.theMovieDbId));
     super.initState();
@@ -65,22 +77,22 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return _isProfileSync ?
+        return _isProfileSync && _isMovieSync ?
         // Le StatefulWidget pour le DropdownButton est nécessaire pour pouvoir utiliser le state lors du changement de valeur
         AlertDialog(
-            title: const Text("Sélectionnez un profil"),
+            title: const Text("Sélectionnez vos paramètres"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Choix du choix de la qualité dans un DropDown
+                // Select for profiles
                 StatefulBuilder(
                   builder: (context, setState) {
                     return DropdownButton<String>(
                       isExpanded: true,
-                      value: dropdownValue,
+                      value: dropdownValueProfiles,
                       onChanged: (String? newValue) {
                         setState(() {
-                          dropdownValue = newValue!;
+                          dropdownValueProfiles = newValue!;
                         });
                       },
                       items: profilesList.map((Profile profile) {
@@ -92,23 +104,47 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     );
                   }
                 ),
+                // Select for rootPath
+                StatefulBuilder(
+                  builder: (context, setState) {
+                    return DropdownButton<String>(
+                      isExpanded: true,
+                      value: dropdownValueRootFolder,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dropdownValueRootFolder = newValue!;
+                        });
+                      },
+                      items: rootPathList.map((RootFolder rootPath) {
+                        return DropdownMenuItem<String>(
+                          value: rootPath.path,
+                          child: Text(rootPath.path),
+                        );
+                      }).toList(),
+                    );
+                  }
+                ),
               ],
             ),
             actions: [
               // Bouton d'annulation
               TextButton(
-                child: const Text('Annuler'),
+                child: const Text('Annuler', style: TextStyle(color: Colors.red)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               // Bouton d'ajout
-              TextButton(
-                child: const Text('Ajouter'),
+              GFButton(
+                color: Colors.deepPurple,
+                textColor: Colors.white,
                 onPressed: () {
                   setState(() => _isLoading = true);
                   // On ajoute le film à la liste des films demandés
-                  message = httpService.addMovie(widget.movie, profilesList.firstWhere((element) => element.name == dropdownValue).id);
+                  message = httpService.addMovie(
+                      widget.movie, profilesList.firstWhere((element) => element.name == dropdownValueProfiles).id,
+                      rootPathList.firstWhere((element) => element.path == dropdownValueRootFolder).id
+                  );
                   message.then((value) {
                     // Apparition de la notification
                     GFToast.showToast(
@@ -132,6 +168,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     }
                   });
                 },
+                child: const Text('Ajouter'),
               ),
             ],
         )
@@ -143,7 +180,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           actions: [
             // Bouton d'annulation
             TextButton(
-              child: const Text('Annuler'),
+              child: const Text('Annuler', style: TextStyle(color: Colors.red)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
