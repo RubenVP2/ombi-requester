@@ -60,6 +60,85 @@ class _MoviePageState extends State<MoviePage> {
     super.dispose();
   }
 
+  Widget _buildBadge(Movie movie) {
+    // Movie is available ?
+    if ( movie.available) {
+      return Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Colors.green,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+          ),
+        ),
+        child: const Text(
+          'Disponible',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    } else if ( movie.approved ) {
+      // Movie is approved ?
+      return Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+          ),
+        ),
+        child: const Text(
+          'Approuvé',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    } else if ( movie.denied ) {
+      return Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+          ),
+        ),
+        child: const Text(
+          'Refusé',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    } else {
+      // The movie is not available and not approved so it's requested maybe ?
+      return Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Colors.deepPurple,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+          ),
+        ),
+        child: const Text(
+          'Demandé',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
+  }
+
   Widget customCard(Movie movie) {
     // Custom card with movie poster and title
     // On tap, open MovieDetailPage
@@ -91,28 +170,12 @@ class _MoviePageState extends State<MoviePage> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    // Badge if the movie is already requested
+                    // Switch the status of the movie we display the badge ( requested / available / approved )
                     if (movie.requested)
                       Positioned(
                         top: 0,
                         right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: Colors.deepPurple,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              bottomLeft: Radius.circular(8),
-                            ),
-                          ),
-                          child: const Text(
-                            'Demandé',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
+                        child: _buildBadge(movie),
                       ),
                   ],
                 ),

@@ -29,6 +29,13 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _writeData() async {
+    // Manage baseUrl, i don't want to have a trailing slash
+    String baseUrl = textControllerBaseUrl.text;
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+      // Update the text field
+      textControllerBaseUrl.text = baseUrl;
+    }
     App.setString('apiKey', textControllerApiKey.text.toString());
     App.setString('baseUrl', textControllerBaseUrl.text.toString());
     App.setString('username', textControllerUsername.text.toString());
@@ -155,13 +162,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     });
                   }
                 },
-                text: 'Synchroniser les profiles',
+                text: 'Synchroniser les profils',
               ),
               // Show last sync
               const SizedBox(height: 15),
               Text(
                 App.getString('lastSync') == '' ? '' : 'Dernière synchronisation le : ${App.getString('lastSync')}',
-                style:  const TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.normal,
                   color: Colors.grey,

@@ -10,6 +10,9 @@ class Movie {
   final String imdbId;
   final double voteAverage;
   final bool requested;
+  final bool approved;
+  final bool available;
+  final bool denied;
   dynamic theMovieDbId;
 
   Movie({
@@ -20,6 +23,9 @@ class Movie {
     required this.imdbId,
     required this.voteAverage,
     required this.requested,
+    required this.approved,
+    required this.available,
+    required this.denied,
     required this.theMovieDbId,
   });
 
@@ -31,6 +37,9 @@ class Movie {
       id: json['id'],
       imdbId: json['imdbId'],
       requested: json['requested'],
+      denied: json['denied'],
+      approved: json['approved'],
+      available: json['available'],
       voteAverage: json['voteAverage'],
       // Cast theMovieDbId as a String to avoid a null value and int
       theMovieDbId: json['theMovieDbId'].toString(),
@@ -39,7 +48,8 @@ class Movie {
 
   @override
   toString() {
-    return 'Movie{title: $title, posterPath: $posterPath, overview: $overview, voteAverage: $voteAverage, id: $id, imdbId: $imdbId, theMovieDbId: $theMovieDbId, requested: $requested}';
+    return 'Movie{title: $title, posterPath: $posterPath, overview: $overview, voteAverage: $voteAverage, id: $id, imdbId: $imdbId, '
+        'theMovieDbId: $theMovieDbId, requested: $requested, approved: $approved, available: $available}';
   }
 
 }
