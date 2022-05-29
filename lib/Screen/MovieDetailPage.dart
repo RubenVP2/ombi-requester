@@ -29,7 +29,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   late Future<Map> message;
 
-  bool _isMovieRequested = false;
+  late bool _isMovieRequested;
 
   bool _isLoading = false;
 
@@ -47,12 +47,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
   @override
   initState() {
-    // On Récupère tous les films demandés par l'utilisateur pour savoir si le film est déjà dans la liste on affiche pas le bouton d'ajout
-    httpService.getAllMoviesRequested().then((value) {
-      setState(() {
-        _isMovieRequested = value.any((element) => element.theMovieDbId == widget.movie.theMovieDbId);
-      });
-    });
+    // isMovie requested ?
+    _isMovieRequested = widget.movie.requested;
     // Cast json to Profile class
     if (stringJson != '') {
       for (var profile in jsonDecode(stringJson)) {
@@ -334,6 +330,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   padding: EdgeInsets.all(10),
                   child: GFButton(
                     onPressed: null,
+                    textColor: Colors.white,
                     text: "Ce film a déjà été ajouté.",
                     color: Colors.deepPurple,
                     type: GFButtonType.solid,

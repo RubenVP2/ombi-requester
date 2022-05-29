@@ -80,7 +80,42 @@ class _MoviePageState extends State<MoviePage> {
                 width: 200,
                 height: 450,
                 padding: const EdgeInsets.all(8),
-                child: Image.network("https://image.tmdb.org/t/p/w500/${movie.posterPath}"),
+                child: Stack(
+                  // This stack is used to display the poster and a badge if the movie is already requested
+                  children: [
+                    // Poster
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        'https://image.tmdb.org/t/p/w500/${movie.posterPath}',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // Badge if the movie is already requested
+                    if (movie.requested)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.deepPurple,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            'Demandé',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
               Expanded(
                 child: Container(
