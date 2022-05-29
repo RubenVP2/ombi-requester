@@ -4,8 +4,7 @@ import 'package:fluttertest/Screen/MovieDetailPage.dart';
 import 'package:fluttertest/Service/http_service.dart';
 import '../Model/movie.dart';
 import 'package:getwidget/getwidget.dart';
-
-import 'Settings.dart';
+import 'package:fswitch_nullsafety/fswitch_nullsafety.dart';
 
 class MoviePage extends StatefulWidget {
   const MoviePage({Key? key}) : super(key: key);
@@ -160,14 +159,31 @@ class _MoviePageState extends State<MoviePage> {
         ),
         // Add a button to toggle theme on the AppBar
         actions: [
-          IconButton(
-            icon: isDarkMode ? const Icon(Icons.wb_sunny) : const Icon(Icons.brightness_3),
-            onPressed: () {
-                AdaptiveTheme.of(context).toggleThemeMode();
-                setState(() {
-                  isDarkMode = AdaptiveTheme.of(context).mode.isDark;
-                });
-           }),
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            child: FSwitch(
+              open: isDarkMode,
+              color: Colors.black87,
+              openColor: Colors.white70,
+              onChanged: (value) {
+                if (value) {
+                  AdaptiveTheme.of(context).setDark();
+                } else {
+                  AdaptiveTheme.of(context).setLight();
+                }
+              },
+              closeChild: const Icon(Icons.sunny, size: 16, color: Colors.white,),
+              // reverse icon for dark mode 
+              openChild: Transform.scale(
+                scaleX: -1,
+                child: const Icon(
+                  Icons.brightness_3_sharp, 
+                  size: 16, 
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          )
         ],
       ),
       body: Column(

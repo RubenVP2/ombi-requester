@@ -53,6 +53,14 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Paramètres'),
+        // Personalized back button
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            // Navigate back to the first screen and force a rebuild
+            Navigator.of(context).pushNamed('/');
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -98,14 +106,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: () {
                   _writeData();
                   GFToast.showToast(
-                    "Settings saved",
+                    "Les paramètres ont été sauvegardés.",
                     context,
                     toastPosition: GFToastPosition.BOTTOM,
                     toastDuration: 3,
                     backgroundColor: Colors.deepPurple,
                     trailing: const Icon(
                       Icons.check,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   );
                 },
@@ -126,7 +134,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       backgroundColor: Colors.deepPurple,
                       trailing: const Icon(
                         Icons.error,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     );
                   } else {
@@ -141,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         backgroundColor: Colors.deepPurple,
                         trailing: const Icon(
                           Icons.info,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       );
                     });

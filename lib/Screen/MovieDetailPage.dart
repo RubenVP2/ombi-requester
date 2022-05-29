@@ -163,6 +163,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Détails du film : ${widget.movie.title}"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       // Scrollable content
       body: CustomScrollView(
