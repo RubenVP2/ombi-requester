@@ -6,6 +6,8 @@ import '../Model/movie.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:fswitch_nullsafety/fswitch_nullsafety.dart';
 
+import '../Model/serie.dart';
+
 class MoviePage extends StatefulWidget {
   const MoviePage({Key? key}) : super(key: key);
 
@@ -17,15 +19,19 @@ class _MoviePageState extends State<MoviePage> {
 
   final HttpService httpService = HttpService();
 
-  int currentNumberOfMovieLoaded = 20;
+  int currentMediaLoaded = 20;
 
   final int amountToLoad = 20;
 
+  // List of movies to display
   late Future<List<Movie>?> futureMovies;
+
+  // List of series to display
+  late Future<List<Serie>?> futureSeries;
 
   String dropdownValue = 'Popular';
 
-  static const String errorMessage = "Erreur lors du chargement des films, veuillez vérifier votre connexion internet ou l'URL de l'api.";
+  static const String errorMessage = "Erreur lors du chargement, veuillez vérifier votre connexion internet ou les paramètres de l'api.";
 
   // La map contient en key la valeur française et en value la valeur anglaise
   static const Map<String, String> dropdownItemsMap = {
@@ -222,7 +228,7 @@ class _MoviePageState extends State<MoviePage> {
           setState(() {
             dropdownValue = newValue;
             // Reset curentNumberOfMovieLoaded to default value
-            currentNumberOfMovieLoaded = 20;
+            currentMediaLoaded = 20;
           });
           // Appel de la fonction qui va récupérer les films et les afficher
           futureMovies = httpService.getMovies(0, amountToLoad, dropdownValue);
@@ -245,147 +251,172 @@ class _MoviePageState extends State<MoviePage> {
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = AdaptiveTheme.of(context).mode.isDark;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Ombi Requester')),
-        // Bouton à droite pour accéder à la page de configuration
-        leading: IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: () {
-            Navigator.of(context).pushNamed('/settings');
-          },
-        ),
-        // Add a button to toggle theme on the AppBar
-        actions: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            child: FSwitch(
-              open: isDarkMode,
-              color: Colors.black87,
-              openColor: Colors.white70,
-              onChanged: (value) {
-                if (value) {
-                  AdaptiveTheme.of(context).setDark();
-                } else {
-                  AdaptiveTheme.of(context).setLight();
-                }
-              },
-              closeChild: const Icon(Icons.sunny, size: 16, color: Colors.white,),
-              // reverse icon for dark mode 
-              openChild: Transform.scale(
-                scaleX: -1,
-                child: const Icon(
-                  Icons.brightness_3_sharp, 
-                  size: 16, 
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          // Selector pour le type de recherche (Popular, Top Rated, ...)
-          SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: customDropDown()
+    // This tab is used to display movies or series
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Center(child: Text('Ombi Requester')),
+          // Button left route to SettingsPage
+          leading: IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/settings');
+            },
           ),
-          Flexible(
-            child: FutureBuilder(
-                future: futureMovies,
-                builder: (context, AsyncSnapshot snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    case ConnectionState.done:
-                      // Gestion de l'erreur
-                      if (snapshot.hasError) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.error_outline, color: Colors.red, size: 60),
-                            SizedBox(height: 20),
-                            Text(
-                              errorMessage,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        );
-                      } else {
-                        // Cas passant
-                        if ( snapshot.data != null ) {
-                          List<Movie> movies = snapshot.data;
-                          return ListView(
-                            shrinkWrap: true,
-                            controller: _scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
-                            children: [
-                              for (Movie movie in movies)
-                                customCard(movie),
-                              // Button for load more content
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: GFButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      // Load more content when button is pressed
-                                      currentNumberOfMovieLoaded += amountToLoad;
-                                      futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
-                                    });
-                                  },
-                                  text: 'Charger plus',
-                                  type: GFButtonType.solid,
-                                  size: GFSize.LARGE,
-                                  color: Colors.deepPurple,
-                                ),
-                              ),
-                              // Si plusieurs fois le bouton a été appuyé, alors on propose de reset le nombre de film chargé pour revenir au début
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: currentNumberOfMovieLoaded == 20 ? Container() :
-                                GFButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      currentNumberOfMovieLoaded = 20;
-                                      futureMovies = httpService.getMovies(currentNumberOfMovieLoaded, amountToLoad, dropdownValue);
-                                    });
-                                  },
-                                  text: 'Repartir au début de la recherche',
-                                  type: GFButtonType.solid,
-                                  size: GFSize.LARGE,
-                                  color: Colors.deepPurple,
-                                ),
-                              ),
-                              // If we are at the end of the page, we display a deepPurple floating action button to scroll to the top
-                              if ( MediaQuery.of(context).viewInsets.bottom == 0 )
-                                Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: FloatingActionButton(
-                                    backgroundColor: Colors.deepPurple,
-                                    onPressed: _scrollToTop,
-                                    child: const Icon(Icons.arrow_upward),
-                                  ),
-                                ),
-                            ],
-                          );
-                        } else {
-                          return const Center(
-                            child: Text(errorMessage),
-                          );
-                        }
-                      }
-                    default:
-                      return const Center(child: CircularProgressIndicator());
+          // Add a button to toggle theme on the AppBar
+          actions: [
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              child: FSwitch(
+                open: isDarkMode,
+                color: Colors.black87,
+                openColor: Colors.white70,
+                onChanged: (value) {
+                  if (value) {
+                    AdaptiveTheme.of(context).setDark();
+                  } else {
+                    AdaptiveTheme.of(context).setLight();
                   }
                 },
-            ),
+                closeChild: const Icon(Icons.sunny, size: 16, color: Colors.white,),
+                // reverse icon for dark mode
+                openChild: Transform.scale(
+                  scaleX: -1,
+                  child: const Icon(
+                    Icons.brightness_3_sharp,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            )
+          ],
+          bottom: const TabBar(
+            // TabBar used to display movies or series
+            indicatorColor: Colors.white,
+            tabs: [
+              Tab(
+                text: 'Films',
+                icon: Icon(Icons.movie),
+              ),
+              Tab(
+                text: 'Séries',
+                icon: Icon(Icons.tv),
+              ),
+            ],
           ),
-        ],
+        ),
+        body: TabBarView(
+          children: [
+            // Tab 1 : Movies
+            Column(
+              children: [
+                // Selector pour le type de recherche (Popular, Top Rated, ...)
+                SizedBox(
+                    height: 50,
+                    width: double.infinity,
+                    child: customDropDown()
+                ),
+                Flexible(
+                  child: FutureBuilder(
+                    future: futureMovies,
+                    builder: (context, AsyncSnapshot snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        case ConnectionState.done:
+                        // Gestion de l'erreur
+                          if (snapshot.hasError) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.error_outline, color: Colors.red, size: 60),
+                                SizedBox(height: 20),
+                                Text(
+                                  errorMessage,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            );
+                          } else {
+                            // Cas passant
+                            if ( snapshot.data != null ) {
+                              List<Movie> movies = snapshot.data;
+                              return ListView(
+                                shrinkWrap: true,
+                                controller: _scrollController,
+                                physics: const BouncingScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
+                                children: [
+                                  for (Movie movie in movies)
+                                    customCard(movie),
+                                  // Button for load more content
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: GFButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          // Load more content when button is pressed
+                                          currentMediaLoaded += amountToLoad;
+                                          futureMovies = httpService.getMovies(currentMediaLoaded, amountToLoad, dropdownValue);
+                                        });
+                                      },
+                                      text: 'Charger plus',
+                                      type: GFButtonType.solid,
+                                      size: GFSize.LARGE,
+                                      color: Colors.deepPurple,
+                                    ),
+                                  ),
+                                  // Si plusieurs fois le bouton a été appuyé, alors on propose de reset le nombre de film chargé pour revenir au début
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: currentMediaLoaded == 20 ? Container() :
+                                    GFButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          currentMediaLoaded = 20;
+                                          futureMovies = httpService.getMovies(currentMediaLoaded, amountToLoad, dropdownValue);
+                                        });
+                                      },
+                                      text: 'Repartir au début de la recherche',
+                                      type: GFButtonType.solid,
+                                      size: GFSize.LARGE,
+                                      color: Colors.deepPurple,
+                                    ),
+                                  ),
+                                  // If we are at the end of the page, we display a deepPurple floating action button to scroll to the top
+                                  if ( MediaQuery.of(context).viewInsets.bottom == 0 )
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: FloatingActionButton(
+                                        backgroundColor: Colors.deepPurple,
+                                        onPressed: _scrollToTop,
+                                        child: const Icon(Icons.arrow_upward),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            } else {
+                              return const Center(
+                                child: Text(errorMessage),
+                              );
+                            }
+                          }
+                        default:
+                          return const Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+            // Tab 2 : Series
+            const CircularProgressIndicator(),
+          ],
+        ),
       ),
     );
   }

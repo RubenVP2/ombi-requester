@@ -292,22 +292,48 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         } else {
                           MovieDetail? movieDetailFromSnapshot = snapshot.data;
                           return Column(
+                            // Column not centered
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                                child: Text(
+                                  "Genre(s) :",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                               // Affichage de badge pour les genres du film
-                              Wrap(
-                                spacing: 5,
-                                runSpacing: 10,
-                                children: movieDetailFromSnapshot!.genres.map((Genre genre) {
-                                  return Chip(
-                                    label: Text(genre.name),
-                                    backgroundColor: Colors.deepPurple,
-                                  );
-                                }).toList(),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Wrap(
+                                  spacing: 5,
+                                  runSpacing: 10,
+                                  children: movieDetailFromSnapshot!.genres.map((Genre genre) {
+                                    return Chip(
+                                      label: Text(genre.name),
+                                      backgroundColor: Colors.deepPurple,
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+                                child: Text(
+                                  "Casting :",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                               SizedBox(
                                 // Make SizedBox dynamic height to avoid overflow error
                                 // This SizedBox is for row spacing
-                                height: MediaQuery.of(context).size.height / 2,
+                                height: MediaQuery.of(context).size.height / 2.3,
                                 width: double.maxFinite,
                                 child: ListView(
                                     physics: const BouncingScrollPhysics(),
@@ -317,14 +343,14 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                     children: [
                                       for (Cast cast in movieDetailFromSnapshot.getCast)
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 30, top: 20),
+                                          padding: const EdgeInsets.only(right: 30, top: 10),
                                           child: Column(
                                             children: [
                                               // Actor avatar
                                               GFAvatar(
                                                 backgroundImage: NetworkImage("https://image.tmdb.org/t/p/w500/${cast.profilePath}"),
                                                 shape: GFAvatarShape.standard,
-                                                size: 100,
+                                                size: MediaQuery.of(context).size.height / 6,
                                               ),
                                               // Actor name
                                               Padding(
