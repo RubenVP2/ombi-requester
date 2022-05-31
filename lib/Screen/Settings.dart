@@ -145,22 +145,29 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     );
                   } else {
-                    // Enregistrement en localStorage de la date courante pour la synchronisation formatter jj/mm/aaaa hh:mm:ss
+                    // Save in localStorage lastSync at format : jj/mm/aaaa hh:mm:ss
                     App.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
-                    httpService.syncProfiles().then((profileResponse) {
-                      httpService.syncRootPath().then((rootPathResponse) =>
-                          GFToast.showToast(
-                            "$rootPathResponse\n$profileResponse",
-                            context,
-                            toastPosition: GFToastPosition.BOTTOM,
-                            toastDuration: 3,
-                            backgroundColor: Colors.deepPurple,
-                            trailing: const Icon(
-                              Icons.info,
-                              color: Colors.white,
-                            ),
-                          )
-                      );
+                    // Get all data from the API
+                    httpService.syncProfilesRadarr().then((profileRadarrResponse) {
+                      httpService.syncRootPathRadarr().then((rootPathRadarrResponse) {
+                        httpService.syncProfilesSonarr().then((profileSonarrResponse) {
+                          httpService.syncRootPathSonarr().then((rootPathSonarrResponse) {
+                            httpService.syncLangageProfilesSonarr().then((langageProfilesSonarrResponse) {
+                              GFToast.showToast(
+                                "$rootPathRadarrResponse\n$profileRadarrResponse\n$rootPathSonarrResponse\n$profileSonarrResponse\n$langageProfilesSonarrResponse",
+                                context,
+                                toastPosition: GFToastPosition.BOTTOM,
+                                toastDuration: 8,
+                                backgroundColor: Colors.deepPurple,
+                                trailing: const Icon(
+                                  Icons.info,
+                                  color: Colors.white,
+                                ),
+                              );
+                            });
+                          });
+                        });
+                      });
                     });
                   }
                 },

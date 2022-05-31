@@ -4,6 +4,7 @@ import 'package:fluttertest/Screen/MoviePage.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import './globals.dart';
 import 'Model/movie.dart';
+import 'Model/serie.dart';
 import 'Screen/Settings.dart';
 
 void main() async {
@@ -20,7 +21,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveTheme(
-
       light: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.deepPurple,
@@ -41,12 +41,22 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                 builder: (context) => const SettingsPage(),
               );
-            case '/movieDetail':
-              return MaterialPageRoute(
-                builder: (context) => MovieDetailPage(
-                  movie: settings.arguments as Movie,
-                ),
-              );
+            case '/mediaDetail':
+              if ( settings.arguments is Movie) {
+                return MaterialPageRoute(
+                  builder: (context) => MovieDetailPage(
+                    media: settings.arguments as Movie,
+                    mediaType: 'movie',
+                  ),
+                );
+              } else {
+                return MaterialPageRoute(
+                  builder: (context) => MovieDetailPage(
+                    media: settings.arguments as Serie,
+                    mediaType: 'serie',
+                  ),
+                );
+              }
           }
           // The code only supports
           // PassArgumentsScreen.routeName right now.
