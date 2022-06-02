@@ -1,4 +1,4 @@
-import 'castSerie.dart';
+import 'cast_serie.dart';
 import 'genre.dart';
 
 class SerieDetail {

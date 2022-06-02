@@ -15,6 +15,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   HttpService httpService = HttpService();
 
+  bool _isLoading = false;
+
   // Controller for the text field
   final textControllerApiKey = TextEditingController();
   final textControllerBaseUrl = TextEditingController();
@@ -39,6 +41,16 @@ class _SettingsPageState extends State<SettingsPage> {
     App.setString('apiKey', textControllerApiKey.text.toString());
     App.setString('baseUrl', textControllerBaseUrl.text.toString());
     App.setString('username', textControllerUsername.text.toString());
+  }
+
+  Future<String> getAllSettings() async {
+    String response = "";
+     response = await httpService.syncProfilesRadarr();
+     response += "${await httpService.syncRootPathRadarr()}\n";
+      response += "${await httpService.syncProfilesSonarr()}\n";
+      response += "${await httpService.syncRootPathSonarr()}\n";
+      response += "${await httpService.syncLangageProfilesSonarr()}\n";
+      return response;
   }
 
   @override
@@ -131,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
               GFButton(
                 color: Colors.deepPurple,
                 size: GFSize.LARGE,
-                onPressed: () {
+                onPressed: () async {
                   if ( textControllerBaseUrl.text == '' || textControllerApiKey.text == '' || textControllerUsername.text == '' ) {
                     GFToast.showToast(
                       "Veuillez remplir tous les champs",
@@ -145,31 +157,24 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     );
                   } else {
+                    setState(() => _isLoading = true);
                     // Save in localStorage lastSync at format : jj/mm/aaaa hh:mm:ss
                     App.setString('lastSync', DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.now()));
                     // Get all data from the API
-                    httpService.syncProfilesRadarr().then((profileRadarrResponse) {
-                      httpService.syncRootPathRadarr().then((rootPathRadarrResponse) {
-                        httpService.syncProfilesSonarr().then((profileSonarrResponse) {
-                          httpService.syncRootPathSonarr().then((rootPathSonarrResponse) {
-                            httpService.syncLangageProfilesSonarr().then((langageProfilesSonarrResponse) {
-                              GFToast.showToast(
-                                "$rootPathRadarrResponse\n$profileRadarrResponse\n$rootPathSonarrResponse\n$profileSonarrResponse\n$langageProfilesSonarrResponse",
-                                context,
-                                toastPosition: GFToastPosition.BOTTOM,
-                                toastDuration: 8,
-                                backgroundColor: Colors.deepPurple,
-                                trailing: const Icon(
-                                  Icons.info,
-                                  color: Colors.white,
-                                ),
-                              );
-                            });
-                          });
-                        });
-                      });
-                    });
+                    String response = await getAllSettings();
+                    GFToast.showToast(
+                      response,
+                      context,
+                      toastPosition: GFToastPosition.BOTTOM,
+                      toastDuration: 8,
+                      backgroundColor: Colors.deepPurple,
+                      trailing: const Icon(
+                        Icons.info,
+                        color: Colors.white,
+                      ),
+                    );
                   }
+                  setState(() => _isLoading = false);
                 },
                 text: 'Synchroniser les profils et répertoires',
               ),
@@ -183,6 +188,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Colors.grey,
                 ),
               ),
+              // Show the circular progress indicator if the data is being fetched.
+              const SizedBox(height: 15),
+              _isLoading ? const Center(child: CircularProgressIndicator()) : Container(),
             ],
           ),
         ),

@@ -49,7 +49,7 @@ class Serie {
     return Serie(
       title: json['title'],
       overview: json['overview'],
-      backdropPath: json['backdropPath'],
+      backdropPath: json['backdropPath'] ?? json['images']['original'],
       theMovieDbId: json['theMovieDbId'],
       rating: double.parse(json['rating']),
       requestAll: json['requestAll'],

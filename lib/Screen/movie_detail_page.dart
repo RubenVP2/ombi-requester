@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertest/Model/castSerie.dart';
-import 'package:fluttertest/Model/rootFolder.dart';
-import 'package:fluttertest/Model/serieDetail.dart';
+import 'package:fluttertest/Model/cast_serie.dart';
+import 'package:fluttertest/Model/root_folder.dart';
+import 'package:fluttertest/Model/serie_detail.dart';
 import 'package:fswitch_nullsafety/fswitch_nullsafety.dart';
 import 'package:getwidget/getwidget.dart';
 import '../Model/cast.dart';
 import '../Model/genre.dart';
 import '../Model/movie.dart';
-import '../Model/movieDetail.dart';
+import '../Model/movie_detail.dart';
 import '../Model/profiles.dart';
 import '../Model/serie.dart';
 import '../Service/http_service.dart';
@@ -59,9 +59,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   bool _isAllRequested = false;
   bool _isFirstSeasonRequested = false;
   bool _isLastSeasonRequested = false;
-  List _seasonsList = [];
+  final List _seasonsList = [];
   // All is empty and in function of what user want to download we will fill it
-  List _seasonsListForSonarr = [];
+  final List _seasonsListForSonarr = [];
 
   // Controller
   late String dropdownValueProfilesRadarr;
@@ -579,7 +579,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: _isMovie
-            ? Text("Détails du  : ${movie!.title}")
+            ? Text("Détails du film : ${movie!.title}")
             : Text("Détails de la série : ${serie!.title}"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -730,7 +730,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                             .genres
                                             .map((Genre genre) {
                                           return Chip(
-                                            label: Text(genre.name),
+                                            label: Text(genre.name, style: const TextStyle(color: Colors.white)),
                                             backgroundColor: Colors.deepPurple,
                                           );
                                         }).toList(),
@@ -821,7 +821,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         },
                       )
                     // List of casting actors from the serie
-                    : serie!.id != 0
+                    : serie != null
                         ? FutureBuilder(
                             future: serieDetail,
                             builder: (BuildContext context,
@@ -868,7 +868,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                                 .genres
                                                 .map((Genre genre) {
                                               return Chip(
-                                                label: Text(genre.name),
+                                                label: Text(genre.name, style: const TextStyle(color: Colors.white)),
                                                 backgroundColor:
                                                     Colors.deepPurple,
                                               );

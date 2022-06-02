@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertest/Screen/MovieDetailPage.dart';
-import 'package:fluttertest/Screen/MoviePage.dart';
+import 'package:fluttertest/Screen/movie_detail_page.dart';
+import 'package:fluttertest/Screen/movie_page.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import './globals.dart';
 import 'Model/movie.dart';
 import 'Model/serie.dart';
-import 'Screen/Settings.dart';
+import 'Screen/settings.dart';
 
 void main() async {
   // You only need to call this method if you need the binding to be initialized before calling

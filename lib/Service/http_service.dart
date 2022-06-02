@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:fluttertest/Model/rootFolder.dart';
-import 'package:fluttertest/Model/serieDetail.dart';
+import 'package:fluttertest/Model/root_folder.dart';
+import 'package:fluttertest/Model/serie_detail.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart';
-import '../Model/movieDetail.dart';
+import '../Model/movie_detail.dart';
 import '../Model/movie.dart';
 import '../Model/serie.dart';
 import '../globals.dart';

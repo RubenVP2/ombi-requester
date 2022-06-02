@@ -1,6 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertest/Screen/MovieDetailPage.dart';
+import 'package:fluttertest/Screen/movie_detail_page.dart';
 import 'package:fluttertest/Service/http_service.dart';
 import '../Model/movie.dart';
 import 'package:getwidget/getwidget.dart';
@@ -57,7 +57,7 @@ class _MoviePageState extends State<MoviePage> {
 
   // This map contains as key the french value and as value the english value
   static const Map<String, String> dropdownSonarrItemsMap = {
-    'Les plus populaires': 'popular',
+    'Les plus populaires': 'Popular',
     'Anticipée': 'anticipated',
     'En tendance': 'trending',
     'Demandé': 'requested',
@@ -431,7 +431,7 @@ class _MoviePageState extends State<MoviePage> {
           futureSeries = httpService.getSeries(0, amountToLoad, dropdownSonarrValue);
         }
       },
-      items: _dropDownRadarrMenuItems,
+      items: _dropDownSonarrMenuItems,
     );
   }
 
