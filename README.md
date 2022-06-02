@@ -1,12 +1,9 @@
-# fluttertest
-[![Codemagic build status](https://api.codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/status_badge.svg)](https://codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/latest_build)  
-A new Flutter project.
+# Ombi requester
+Personal application created with the Flutter framework.  
+It allows to communicate with the Ombi tool.  
+Realized for educational purposes.  
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
