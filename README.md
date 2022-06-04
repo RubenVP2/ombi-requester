@@ -1,13 +1,15 @@
 # Ombi requester
+
+## Project Description
 Personal application created with the Flutter framework.  
 It allows to communicate with the Ombi tool.  
 Realized for educational purposes.  
+The application allows you to ask Ombi to add movies or series on Sonarr or Radarr.
 
-## Getting Started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## How to Install and Run the Project
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## How to Use the Project
+
+## License 
+[GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/)
