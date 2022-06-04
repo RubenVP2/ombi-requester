@@ -44,6 +44,7 @@ class HttpService {
     try {
       res = await get(url, headers: {
         "ApiKey": apiKey,
+        "Access-Control-Allow-Origin": "*",
       }
       );
     } catch (e) {
