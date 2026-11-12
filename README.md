@@ -1,16 +1,33 @@
-# fluttertest
-[![Codemagic build status](https://api.codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/status_badge.svg)](https://codemagic.io/apps/628fa187c7038f82f7e36b34/628fa187c7038f82f7e36b33/latest_build)  
-A new Flutter project.
+# Ombi requester
+![Demo preview](./assets/demo.gif)
 
-## Getting Started
+## Project Description
+Personal application created with the Flutter framework.  
+It allows to communicate with the Ombi tool.  
+Realized for educational purposes.  
+The application allows you to ask Ombi to add movies or series on Sonarr or Radarr.
 
-This project is a starting point for a Flutter application.
+## How to Install and Run the Project
+You need to install the Flutter SDK and the Dart SDK.  
+You can find the installation instructions [here](https://flutter.dev/docs/get-started/install/).  
 
-A few resources to get you started if this is your first Flutter project:
+After installing the SDKs, you need to clone the repository.  
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Get the dependencies for flutter:
+```
+flutter pub get
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+You can run the application by running the following command:
+```
+flutter run [environment]
+```
+More information about the flutter cli : [here](https://docs.flutter.dev/reference/flutter-cli).
+
+## How to Use the Project
+When you open the application, you will see the home page.  
+First of all, you need to go to the settings page, where you can configure api key, username and url of the Ombi server.  
+After that, you can go to the home page, where you can see the list of movies or series.  
+
+## License 
+[GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/)

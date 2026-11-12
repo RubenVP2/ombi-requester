@@ -105,8 +105,11 @@ class HttpService {
   ///
   ///  Query to add a Movie
   ///
-  Future<Map> addMovie(Movie movie, int quality, int rootFolderOverride) async {
+  Future<Map> addMovie(Movie movie, int quality, int rootFolderOverride,
+      {bool is4kRequest = false}) async {
     // Create the url
+    // La demande 4k est un simple drapeau transmis à Ombi : défaut false,
+    // pour que les appels existants à trois arguments continuent de compiler.
     var url = Uri.parse("$baseUrl/v1/Request/movie");
 
     Map data = {
@@ -114,7 +117,7 @@ class HttpService {
       'languageCode': 'fr',
       'qualityPathOverride': quality,
       'rootFolderOverride': rootFolderOverride,
-      'is4kRequest': false,
+      'is4kRequest': is4kRequest,
     };
     // Encode Map to JSON
     var body = jsonEncode(data);
